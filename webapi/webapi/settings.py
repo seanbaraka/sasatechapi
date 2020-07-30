@@ -26,7 +26,9 @@ SECRET_KEY = 'y%ls&x3o%49@wp2i(#du*5d6ki9tjy*u3d=qr%mn!r4i+j#**)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '192.168.201.2'
+]
 
 
 # Application definition

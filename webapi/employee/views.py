@@ -25,9 +25,8 @@ class EmployeeView(RetrieveAPIView):
         return HttpResponse(data, content_type='application/json')
 
     @csrf_exempt #this decorator exempts the requests to this url from CSRF
-    def post(self,request):
-        if request.method == 'POST':
-            data = json.loads(request.body) # deserialize the request body to a python object
+    def post(self, request):
+        data = json.loads(request.body) # deserialize the request body to a python object
 
         employee = Employee() # create an instance of the employee model
         employee.first_name = data['first_name']
@@ -37,6 +36,7 @@ class EmployeeView(RetrieveAPIView):
         employee.phone_number = data['phone_number']
         userdata = data['user']
 
+        # TODO: Remove age and add job description
 
         user = User.objects.create_user(userdata['email'], userdata['password'])
         employee.user = user
@@ -46,8 +46,8 @@ class EmployeeView(RetrieveAPIView):
 @csrf_exempt
 def userLogin(request):
     login_data = json.loads(request.body)
-    email = login_data['email']
-    password = login_data['password']
+    email = login_data['user_email']
+    password = login_data['user_password']
 
     user = authenticate(email=email, password=password)
 
@@ -57,8 +57,8 @@ def userLogin(request):
             'error': 'no user matching the credentials was found'
         }
 
-        return JsonResponse(not_found, safe=False)
-        
+        return JsonResponse(not_found, safe=False, status=404)
+
     try:
         payload = JWT_PAYLOAD_HANDLER(user)
         jwt_token = JWT_ENCODE_HANDLER(payload)
@@ -71,5 +71,5 @@ def userLogin(request):
         "token": jwt_token
     }
 
-    return JsonResponse(user_data, safe=False)
+    return JsonResponse(user_data, safe=False, status=200)
 
